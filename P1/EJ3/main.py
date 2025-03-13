@@ -12,20 +12,19 @@ def main():
     
     url = "https://quotes.toscrape.com"
    
-    # Solicitamos al usuario que elija la estrategia de scraping
-    # Se realiza el scraping y se guarda en un archivo yaml
-    estrategia = input("Elija la estrategia de scraping (1 para BeautifulSoup, 2 para Selenium): ")
     
-    if estrategia == "1":
-        context = Context(BeautifulSoupScrap())
-        datos = context.scrape(url)
-        pasar_a_yaml(datos, "quotesBeautifulSoup.yaml")
-    elif estrategia == "2":
-        context = Context(SeleniumStrategy())
-        datos = context.scrape(url)
-        pasar_a_yaml(datos, "quotesSelenium.yaml")
-    else:
-        print("Estrategia no válida. Por favor, elija 1 o 2.")
+    # Se realiza el scraping y se guarda en un archivo yaml
+    context = Context(BeautifulSoupScrap())
+    datosBeautifulSoup = context.scrape(url)
+    pasar_a_yaml(datosBeautifulSoup, "quotesBeautifulSoup.yaml")
+    
+    #cambio de estrategia
+    context.set_strategy(SeleniumStrategy())
+    datosSelenium = context.scrape(url)
+    pasar_a_yaml(datosSelenium, "quotesSelenium.yaml")
+    
+    
+   
     
 if __name__ == "__main__":
     main()
