@@ -8,7 +8,7 @@ package practica1;
  */
 public interface FactoriaCarreraYBicicleta {
     
-    Carrera crearCarrera(int numBicicletas);
+    Carrera crearCarrera();
     
     Bicicleta crearBicicleta(int id);
     

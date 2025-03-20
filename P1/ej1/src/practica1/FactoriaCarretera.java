@@ -9,8 +9,8 @@ package practica1;
 public class FactoriaCarretera implements FactoriaCarreraYBicicleta{
 
     @Override
-    public Carrera crearCarrera(int numBicicletas) {
-        return new CarreraCarretera(numBicicletas);
+    public Carrera crearCarrera() {
+        return new CarreraCarretera();
     }
 
     @Override

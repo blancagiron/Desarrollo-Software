@@ -18,7 +18,25 @@ public class ej1 {
         FactoriaCarretera fc = new FactoriaCarretera();
         FactoriaMontana fm = new FactoriaMontana();
         
-        fc.crearCarrera(bicis).correr();
-        fm.crearCarrera(bicis).correr();
+        CarreraCarretera cc = (CarreraCarretera)(fc.crearCarrera());
+        CarreraMontana cm = (CarreraMontana)(fm.crearCarrera());
+        
+        for(int i = 0; i < bicis; i++){
+            cc.addBicicleta(fc.crearBicicleta(i));
+            cm.addBicicleta(fm.crearBicicleta(i));
+        }
+        
+        Thread t1 = new Thread(cc);
+        Thread t2 = new Thread(cm);
+        
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            System.out.println("Error en la ejecución de los hilos");
+        }
     }
 }

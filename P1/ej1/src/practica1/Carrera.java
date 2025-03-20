@@ -8,10 +8,10 @@ import java.util.ArrayList;
  * @author Blanca
  * @author Pablo
  */
-public abstract class Carrera {
+public abstract class Carrera implements Runnable{
     
     private ArrayList<Bicicleta> bicicletas;
-    private int duracion = 60;
+    public static final int DURACION = 60;
     
     Carrera(){
         this.bicicletas = new ArrayList<>();
@@ -25,6 +25,8 @@ public abstract class Carrera {
         return bicicletas;
     }
     
-    public abstract void correr();
+    protected abstract void correr();
+    
+    protected abstract void retirarBicicletas();
     
 }

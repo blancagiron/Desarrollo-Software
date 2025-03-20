@@ -12,9 +12,4 @@ public class BicicletaMontana extends Bicicleta {
         super(id);
     }
     
-    @Override
-    public String getTipo() {
-        return this.tipo.toString();
-    }
-    
 }

@@ -2,6 +2,8 @@ package practica1;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -9,37 +11,38 @@ import java.util.Random;
  * @author Blanca
  * @author Pablo
  */
-public class CarreraCarretera extends Carrera {
+public class CarreraCarretera extends Carrera{
     
-    private double porcentajeRetirada = 0.1;
-    
-    CarreraCarretera(int numBicicletas){
-        super();
-        FactoriaCarretera factoria = new FactoriaCarretera();
-        
-        for (int i = 0; i < numBicicletas; i++){
-            addBicicleta(factoria.crearBicicleta(i));
-        }
-    }
+    private final double porcentajeRetirada = 0.1;
 
     @Override
-    public void correr() {
+    protected void correr() {
         System.out.println("Se inicia la carrera de carretera\n");
         retirarBicicletas();
-        System.out.println("La carrera de carretera ha terminado\n");
+        try {
+            Thread.sleep(DURACION*1000);
+        } catch (InterruptedException ex) {
+            System.out.println("Error mientras dura la carrera");
+        }
+        System.out.println("La carrera de carretera ha terminado con " + getBicicletas().size() + " bicicletas\n");
     }
     
-    private void retirarBicicletas(){
+    @Override
+    protected void retirarBicicletas(){
         Random rand = new Random();
         ArrayList<Bicicleta> bicicletas = getBicicletas();
         int num_descartar = (int) (bicicletas.size() * porcentajeRetirada);
-        System.out.println("Se van a eliminar " + Integer.toString(num_descartar) + " bicicletas");
         
         while (num_descartar != 0){
            int siguiente = rand.nextInt(bicicletas.size());
            bicicletas.remove(siguiente);
            num_descartar--;
         }
+    }
+
+    @Override
+    public void run() {
+        this.correr();
     }
     
 }

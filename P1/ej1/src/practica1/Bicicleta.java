@@ -9,7 +9,6 @@ package practica1;
 public abstract class Bicicleta {
     
     private int id;
-    protected Tipo tipo;
     
     Bicicleta(int id){
         this.id = id;
@@ -18,8 +17,6 @@ public abstract class Bicicleta {
     public int getId(){
         return this.id;
     }
-    
-    public abstract String getTipo();
     
     public String ride() {
         return "Bicicleta " + Integer.toString(this.id) + " en carrera";
