@@ -1,4 +1,5 @@
 class Context:
+    # En el diagrama URL , la relación entre Context y ScrapeStrategy es de agregación ,
     def __init__(self, strategy):
         self._strategy = strategy
     
