@@ -25,8 +25,6 @@ public abstract class Carrera implements Runnable{
         return bicicletas;
     }
     
-    protected abstract void correr();
-    
     protected abstract void retirarBicicletas();
     
 }

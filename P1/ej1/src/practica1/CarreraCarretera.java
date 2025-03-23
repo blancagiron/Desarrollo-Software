@@ -14,18 +14,6 @@ import java.util.logging.Logger;
 public class CarreraCarretera extends Carrera{
     
     private final double porcentajeRetirada = 0.1;
-
-    @Override
-    protected void correr() {
-        System.out.println("Se inicia la carrera de carretera\n");
-        retirarBicicletas();
-        try {
-            Thread.sleep(DURACION*1000);
-        } catch (InterruptedException ex) {
-            System.out.println("Error mientras dura la carrera");
-        }
-        System.out.println("La carrera de carretera ha terminado con " + getBicicletas().size() + " bicicletas\n");
-    }
     
     @Override
     protected void retirarBicicletas(){
@@ -42,7 +30,14 @@ public class CarreraCarretera extends Carrera{
 
     @Override
     public void run() {
-        this.correr();
+        System.out.println("Se inicia la carrera de carretera\n");
+        retirarBicicletas();
+        try {
+            Thread.sleep(DURACION*1000);
+        } catch (InterruptedException ex) {
+            System.out.println("Error mientras dura la carrera");
+        }
+        System.out.println("La carrera de carretera ha terminado con " + getBicicletas().size() + " bicicletas\n");
     }
     
 }
