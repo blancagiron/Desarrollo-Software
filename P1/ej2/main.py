@@ -16,7 +16,7 @@ def main():
     model_expansion = config["model_expansion"]
     
     # Token de API de Hugging Face (en un entorno real debería estar en una variable de entorno)
-    api_token = "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"
+    api_token = ""
     API_URL = "https://api-inference.huggingface.co/models/"
     
     # Crear el LLM básico
