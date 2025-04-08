@@ -9,7 +9,7 @@ class Contexto{
       estrategia = e;
    }
 
-   Future<String> enviar(String mensaje) { //Recibe mensaje-> pasa el mensaje a la estrategia que esté activa (llama a método mandarMensaje
+   Future<String> delegarTrabajo(String mensaje) { //Recibe mensaje-> pasa el mensaje a la estrategia que esté activa (llama a método mandarMensaje
       return estrategia.mandarMensaje(mensaje);  // devuelve la respuesta del modelo
    }
 }
