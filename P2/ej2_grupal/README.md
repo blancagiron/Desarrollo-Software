@@ -1,16 +1,34 @@
-# ej2_grupal
+# Selector de Modelos LLM - Flutter + Hugging Face
 
-A new Flutter project.
+Este ejercicio, el 2 de la parte grupal de la práctica 2, implementa una aplicación Flutter que permite seleccionar diferentes modelos de lenguaje alojados en Hugging Face y enviarles preguntas o instrucciones. Se utiliza el patrón de diseño Strategy para cambiar fácilmente entre modelos sin modificar la lógica principal de la aplicación.
 
-## Getting Started
+## Características
 
-This project is a starting point for a Flutter application.
+- Interfaz sencilla e intuitiva construida con Flutter.
+- Comunicación con la API de inferencia de Hugging Face.
+- Permite elegir entre varios modelos de lenguaje:
+    - Falcon
+    - Facebook BlenderBot
+    - FLAN-T5
+    - Phi-3 Mini
+- Se muestran descripciones y formatos de prompt recomendados para cada modelo.
+- Visualización de la respuesta del modelo.
 
-A few resources to get you started if this is your first Flutter project:
+## Patrón Strategy
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+El cambio de modelo se gestiona mediante el patrón de diseño Strategy. La clase `Contexto` actúa como intermediario entre la interfaz y la lógica de cada modelo. Cada modelo se define como una estrategia independiente que implementa cómo construir el prompt y realizar la petición.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Ejecución
+
+1. Clonar el repositorio.
+2. Tener Flutter correctamente instalado.
+3. Añadir el token de Hugging Face (si es necesario) en las estrategias correspondientes.
+4. Ejecutar la aplicación con:
+
+```
+flutter run
+```
+
+## Capturas
+
+Las capturas del funcionamiento de la aplicación se encuentran en la sección "Salida" de la memoria.
