@@ -7,3 +7,5 @@ Actualmente, el repositorio contiene la Práctica 1, en la que se exploran patro
 ## Índice:
 
 ### 1. [Práctica 1. Patrones creacionales y estructurales en OO](https://github.com/blancagiron/Desarrollo-Software/tree/master/P1)
+### 1. [Práctica 2. Adaptación de una Solución de Software a la Plataforma Flutter](https://github.com/blancagiron/Desarrollo-Software/tree/master/P2)
+
