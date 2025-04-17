@@ -21,9 +21,9 @@ class EmailDomainFilter extends Filter {
     String email = request['email'] ?? '';
     String domain = email.split('@')[1].toLowerCase();
 
-    final domainRegex = RegExp(r'^[a-z0-9.-]+\.[a-z]{2,10}$');
+    final domainRegex = RegExp(r'^[a-z0-9.]+\.[a-z]{2,10}$');
 
-    if (domainRegex.hasMatch(domain)) {
+    if (!domainRegex.hasMatch(domain)) {
       return "El dominio del correo debe tener un formato válido (ej: gmail.com, outlook.co.es, yahoo.es)";
     }
     return null;
