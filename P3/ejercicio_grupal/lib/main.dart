@@ -218,7 +218,7 @@ class AccountCard extends StatelessWidget {
                 children: [
                   const Text('Saldo disponible'),
                   Text(
-                    '\$${account.amount.toStringAsFixed(2)}',
+                    '€${account.amount.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -281,8 +281,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
         content: TextField(
           controller: _amountController,
           decoration: const InputDecoration(
-            labelText: 'Asunto',
-            prefixText: '\$',
+            labelText: 'Importe',
+            suffixText: '€',
           ),
           keyboardType: TextInputType.number,
         ),
@@ -325,8 +325,8 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
             TextField(
               controller: _amountController,
               decoration: const InputDecoration(
-                labelText: 'Monto',
-                prefixText: '\$',
+                labelText: 'Importe',
+                prefixText: '€',
               ),
               keyboardType: TextInputType.number,
             ),
@@ -423,7 +423,7 @@ class _AccountDetailScreenState extends State<AccountDetailScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '\$${widget.account.amount.toStringAsFixed(2)}',
+                  '€${widget.account.amount.toStringAsFixed(2)}',
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -617,7 +617,7 @@ class TransactionTile extends StatelessWidget {
           title: Text(title),
           subtitle: Text(transaction.toString()),
           trailing: Text(
-            '\$${amount.toStringAsFixed(2)}',
+            '€${amount.toStringAsFixed(2)}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
