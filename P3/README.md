@@ -65,9 +65,9 @@ flutter test
 
 ## Equipo de Desarrollo
 
-Karim Said Lupiañez
-Pablo Tamayo López
-Blanca Girón Ricoy
+- Karim Said Lupiañez 
+- Pablo Tamayo López 
+- Blanca Girón Ricoy
 
 ## Licencia
 Este proyecto es parte de una práctica educativa y no tiene fines comerciales.
