@@ -9,7 +9,7 @@ class Fachada {
   List<Silla> sillas = [];
   List<Envio> envios = [];
   SillaBuilder? builder;
-  static int CONTADOR_DE_ENVIOS = 1;
+  static int CONTADOR_DE_ENVIOS = 0;
 
   void setBuilder(SillaBuilder sillaBuilder) {
     builder = sillaBuilder;
