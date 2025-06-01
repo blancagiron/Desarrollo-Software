@@ -39,7 +39,8 @@ class Fachada {
   }
 
   void crearEnvio(String direccion, String tipo) async {
-    final envio = EnvioFactory.crearEnvio(tipo, _crearID(), sillas, EstadoEnvio.pendiente, direccion);
+    List<Silla> lista_sillas = List.from(sillas);
+    final envio = EnvioFactory.crearEnvio(tipo, _crearID(), lista_sillas, EstadoEnvio.pendiente, direccion);
 
     final response = await http.post(
       Uri.parse('http://localhost:3000/envios'),
