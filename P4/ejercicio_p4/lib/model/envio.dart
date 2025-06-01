@@ -19,6 +19,12 @@ abstract class Envio {
   void realizarEnvio();
   String getTipo();
   EstadoEnvio getEstado();
+
+  Map<String, String> sillasToJson() {
+    return sillas.asMap().map((index, silla) {
+      return MapEntry(index.toString(), silla.toString());
+    });
+  }
 }
 
 class EnvioNormal extends Envio {
