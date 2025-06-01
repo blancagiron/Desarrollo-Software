@@ -64,38 +64,61 @@ class Fachada {
   }
 
   Future<List<Envio>> getEnvios() async {
-    final response = await http.get(Uri.parse(
-        'http://localhost:3000/envios'));
+    final response = await http.get(Uri.parse('http://localhost:3000/envios'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       envios = data.map<Envio>((envioJson) {
-        List<Silla> sillas = (envioJson['sillas'] as List).map<Silla>((sillaJson) {
-          final tipo = sillaJson['tipo'];
-          final builder = _builderDesdeTipo(tipo);
-          builder.crearNuevaSilla();
-          builder.setRespaldo();
-          builder.setPrecio();
-          builder.setAcolchada();
-          builder.setRuedas();
-          Silla silla = builder.getSilla();
-          return silla;
-        }).toList();
 
-        final estado = EstadoEnvio.values.firstWhere(
-              (e) => e.name == envioJson['estado'],
-          orElse: () => EstadoEnvio.pendiente,
-        );
+        // Procesar sillas - Rails envía un objeto, no una lista
+        List<Silla> sillas = [];
+        if (envioJson['sillas'] != null) {
+          final sillasData = envioJson['sillas'] as Map<String, dynamic>;
+          sillas = sillasData.entries.map<Silla>((entry) {
+            if (entry.value == "" || entry.value == null) {
+              return Silla(true, true, true, 100);
+            }
 
-        final tipoEnvio = envioJson['tipo'];
-        final id = envioJson['id'];
+            final sillaJson = entry.value;
+            final tipo = sillaJson['tipo'] ?? 'basica';
+            final builder = _builderDesdeTipo(tipo);
+            builder.crearNuevaSilla();
+            builder.setRespaldo();
+            builder.setPrecio();
+            builder.setAcolchada();
+            builder.setRuedas();
+            return builder.getSilla();
+          }).toList();
+        }
+
+        // Procesar estado - Rails envía strings ("pendiente", "en_transito", "entregado")
+        final estadoString = envioJson['estado'] as String;
+        EstadoEnvio estado;
+        switch (estadoString) {
+          case 'pendiente':
+            estado = EstadoEnvio.pendiente;
+            break;
+          case 'en_transito':
+            estado = EstadoEnvio.enTransito; // Ajusta según tu enum
+            break;
+          case 'entregado':
+            estado = EstadoEnvio.entregado;
+            break;
+          default:
+            estado = EstadoEnvio.pendiente;
+        }
+
+        // Procesar tipo - Rails envía strings ("normal", "express")
+        final tipoEnvio = envioJson['tipo'] as String;
+        final id = envioJson['id'].toString();
         final direccion = envioJson['direccion'];
 
         return EnvioFactory.crearEnvio(tipoEnvio, id, sillas, estado, direccion);
       }).toList();
+
       return envios;
     } else {
-      throw Exception('Error al obtener envíos');
+      throw Exception('Error al obtener envíos: ${response.statusCode}');
     }
   }
 
