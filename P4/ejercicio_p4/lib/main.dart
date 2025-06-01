@@ -124,6 +124,41 @@ class _SillaStoreHomeState extends State<SillaStoreHome> {
     );
   }
 
+  void _realizarEnvioAction(String envioId) {
+    _fachada.realizarEnvio(envioId);
+    setState(() {}); // Actualizar la UI
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Envío realizado exitosamente'),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  String _getEstadoText(EstadoEnvio estado) {
+    switch (estado) {
+      case EstadoEnvio.pendiente:
+        return 'Pendiente';
+      case EstadoEnvio.enTransito:
+        return 'En Tránsito';
+      case EstadoEnvio.entregado:
+        return 'Entregado';
+    }
+  }
+
+  Color _getEstadoColor(EstadoEnvio estado) {
+    switch (estado) {
+      case EstadoEnvio.pendiente:
+        return Colors.orange;
+      case EstadoEnvio.enTransito:
+        return Colors.blue;
+      case EstadoEnvio.entregado:
+        return Colors.green;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,11 +209,13 @@ class _SillaStoreHomeState extends State<SillaStoreHome> {
         children: [
           _buildCatalogo(),
           _buildCarrito(),
+          _buildEnvios(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chair),
@@ -187,6 +224,10 @@ class _SillaStoreHomeState extends State<SillaStoreHome> {
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Carrito',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_shipping),
+            label: 'Envíos',
           ),
         ],
       ),
@@ -436,6 +477,204 @@ class _SillaStoreHomeState extends State<SillaStoreHome> {
                     ),
                   ),
                 ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEnvios() {
+    final envios = _fachada.envios;
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Mis Envíos',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (envios.isNotEmpty)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _fachada.eliminarHistorial();
+                      _fachada.envios.clear();
+                    });
+                  },
+                  child: const Text('Limpiar Historial'),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (envios.isEmpty)
+            const Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.local_shipping_outlined,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'No tienes envíos registrados',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: envios.length,
+                itemBuilder: (context, index) {
+                  final envio = envios[index];
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ExpansionTile(
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: envio.getTipo() == 'Express'
+                              ? Colors.orange.withOpacity(0.1)
+                              : Colors.blue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          envio.getTipo() == 'Express'
+                              ? Icons.flash_on
+                              : Icons.local_shipping,
+                          color: envio.getTipo() == 'Express'
+                              ? Colors.orange
+                              : Colors.blue,
+                        ),
+                      ),
+                      title: Text(
+                        'Envío ${envio.getTipo()} - ${envio.id}',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _getEstadoColor(envio.getEstado()),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  _getEstadoText(envio.getEstado()),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Total: \$${envio.getCostoTotal().toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Dirección: ${envio.direccion}',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Sillas en este envío:',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              ...envio.sillas.map((silla) => Padding(
+                                padding: const EdgeInsets.only(bottom: 4),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.chair,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        silla.toString(),
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )).toList(),
+                              const SizedBox(height: 12),
+                              if (envio.getEstado() == EstadoEnvio.pendiente)
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () => _realizarEnvioAction(envio.id),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: const Text('Realizar Envío'),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
         ],
