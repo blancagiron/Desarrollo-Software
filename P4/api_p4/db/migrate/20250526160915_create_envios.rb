@@ -4,6 +4,7 @@ class CreateEnvios < ActiveRecord::Migration[7.0]
       t.json :sillas
       t.integer :estado, default: 0
       t.string :direccion
+      t.integer :tipo, default: 0
 
       t.timestamps
     end
