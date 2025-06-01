@@ -6,128 +6,145 @@ abstract class SillaBuilder {
   void setPrecio();
   void setAcolchada();
   void setRuedas();
+  Silla getSilla();
 }
 
 class SillaGamingBuilder implements SillaBuilder {
-  late Silla _silla;
+  late Silla silla;
 
   @override
   void crearNuevaSilla() {
-    _silla = Silla(false, false, false, 0.0);
+    silla = Silla(false, false, false, 0.0);
+    silla.setToString("gaming");
   }
 
   @override
   void setRespaldo() {
-    _silla.setRespaldo(true);
+    silla.setRespaldo(true);
   }
 
   @override
   void setPrecio() {
-    _silla.setPrecio(299.99);
+    silla.setPrecio(299.99);
   }
 
   @override
   void setAcolchada() {
-    _silla.setAcolchada(true);
+    silla.setAcolchada(true);
   }
 
   @override
   void setRuedas() {
-    _silla.setRuedas(true);
+    silla.setRuedas(true);
   }
 
-  Silla getSilla() => _silla;
+  @override
+  Silla getSilla() {
+    return silla;
+  }
 }
 
 class SillaOficinaBuilder implements SillaBuilder {
-  late Silla _silla;
+  late Silla silla;
 
   @override
   void crearNuevaSilla() {
-    _silla = Silla(false, false, false, 0.0);
+    silla = Silla(false, false, false, 0.0);
+    silla.setToString("oficina");
   }
 
   @override
   void setRespaldo() {
-    _silla.setRespaldo(true);
+    silla.setRespaldo(true);
   }
 
   @override
   void setPrecio() {
-    _silla.setPrecio(199.99);
+    silla.setPrecio(199.99);
   }
 
   @override
   void setAcolchada() {
-    _silla.setAcolchada(false);
+    silla.setAcolchada(false);
   }
 
   @override
   void setRuedas() {
-    _silla.setRuedas(true);
+    silla.setRuedas(true);
   }
 
-  Silla getSilla() => _silla;
+  @override
+  Silla getSilla(){
+    return silla;
+  }
 }
 
 class SillaComedorBuilder implements SillaBuilder {
-  late Silla _silla;
+  late Silla silla;
 
   @override
   void crearNuevaSilla() {
-    _silla = Silla(false, false, false, 0.0);
+    silla = Silla(false, false, false, 0.0);
+    silla.setToString("comedor");
   }
 
   @override
   void setRespaldo() {
-    _silla.setRespaldo(true);
+    silla.setRespaldo(true);
   }
 
   @override
   void setPrecio() {
-    _silla.setPrecio(89.99);
+    silla.setPrecio(89.99);
   }
 
   @override
   void setAcolchada() {
-    _silla.setAcolchada(false);
+    silla.setAcolchada(false);
   }
 
   @override
   void setRuedas() {
-    _silla.setRuedas(false);
+    silla.setRuedas(false);
   }
 
-  Silla getSilla() => _silla;
+  @override
+  Silla getSilla(){
+    return silla;
+  }
 }
 
 class SillaInfantilBuilder implements SillaBuilder {
-  late Silla _silla;
+  late Silla silla;
 
   @override
   void crearNuevaSilla() {
-    _silla = Silla(false, false, false, 0.0);
+    silla = Silla(false, false, false, 0.0);
+    silla.setToString("infantil");
   }
 
   @override
   void setRespaldo() {
-    _silla.setRespaldo(true);
+    silla.setRespaldo(true);
   }
 
   @override
   void setPrecio() {
-    _silla.setPrecio(49.99);
+    silla.setPrecio(49.99);
   }
 
   @override
   void setAcolchada() {
-    _silla.setAcolchada(true);
+    silla.setAcolchada(true);
   }
 
   @override
   void setRuedas() {
-    _silla.setRuedas(false);
+    silla.setRuedas(false);
   }
 
-  Silla getSilla() => _silla;
+  @override
+  Silla getSilla() {
+    return silla;
+  }
 }

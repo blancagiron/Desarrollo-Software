@@ -3,6 +3,7 @@ class Silla {
   bool ruedas;
   bool acolchada;
   double precio;
+  String tipo = "";
 
   Silla(this.respaldo, this.ruedas, this.acolchada, this.precio);
 
@@ -12,8 +13,12 @@ class Silla {
     precio = nuevoPrecio;
   }
 
+  void setToString(String silla){
+    tipo = silla;
+  }
+
   String toString() {
-    return "Silla(respaldo: $respaldo, ruedas: $ruedas, acolchada: $acolchada, precio: \$${precio.toStringAsFixed(2)})";
+    return tipo;
   }
 
   void setRespaldo(bool tieneRespaldo) {
