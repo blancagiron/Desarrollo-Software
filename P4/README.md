@@ -85,3 +85,9 @@ Navegación entre tres secciones principales:
 # Diagrama UML
 
 ![Diagrama UML](./diagramaUMLp4.png)
+
+# Autores:
+
+- Karim Said Lupiañez
+- Pablo Tamayo López
+- Blanca Girón Ricoy
