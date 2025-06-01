@@ -9,7 +9,7 @@ class Fachada {
   List<Silla> sillas = [];
   List<Envio> envios = [];
   SillaBuilder? builder;
-  static int CONTADOR_DE_ENVIOS = 1;
+  static int CONTADOR_DE_ENVIOS = 0;
 
   void setBuilder(SillaBuilder sillaBuilder) {
     builder = sillaBuilder;
@@ -46,7 +46,8 @@ class Fachada {
       Uri.parse('http://localhost:3000/envios'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'envio': { 
+        'envio': {
+          'id': int.parse(envio.id),
           'tipo': tipo,
           'direccion': direccion,
           'estado': 'pendiente',
@@ -157,7 +158,7 @@ class Fachada {
       body: jsonEncode({'estado': 'en_transito'}),
     );
 
-    envio.realizarEnvio();
+    await envio.realizarEnvio();
 
     await http.patch(
       Uri.parse('http://localhost:3000/envios/$id'),

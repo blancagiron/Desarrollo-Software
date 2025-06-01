@@ -50,6 +50,6 @@ class EnviosController < ApplicationController
   end
 
   def envio_params
-    params.require(:envio).permit(:direccion, :estado, :tipo, sillas: {})
+    params.require(:envio).permit( :id, :direccion, :estado, :tipo, sillas: {})
   end
 end
