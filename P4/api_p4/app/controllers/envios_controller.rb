@@ -38,6 +38,11 @@ class EnviosController < ApplicationController
     head :no_content
   end
 
+  def reset
+    Envio.delete_all
+    render json: { message: 'Reset done' }, status: :ok
+  end
+
   private
 
   def set_envio
