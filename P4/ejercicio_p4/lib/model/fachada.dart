@@ -46,7 +46,8 @@ class Fachada {
       Uri.parse('http://localhost:3000/envios'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'envio': { 
+        'envio': {
+          'id': int.parse(id),
           'tipo': tipo,
           'direccion': direccion,
           'estado': 'pendiente',
