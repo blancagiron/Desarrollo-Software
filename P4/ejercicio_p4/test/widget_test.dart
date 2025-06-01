@@ -125,21 +125,36 @@ void main() {
   group('Fachada Tests', () {
     late Fachada fachada;
 
-    setUp(() {
+    setUp(() async {
       fachada = Fachada();
+
+      // Limpiar envíos del backend
+      final response = await http.delete(Uri.parse('http://localhost:3000/envios/reset'));
+      if (response.statusCode != 200) {
+        throw Exception('No se pudo resetear el backend: ${response.body}');
+      }
     });
 
     test('crearEnvio agrega un envío correctamente', () async {
-      // Crear sillas para el envío
-      var silla1 = Silla(true, true, true, 150);
-      var silla2 = Silla(true, false, true, 100);
+      final fachada = Fachada();
+
+      // Crear sillas usando builders
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla()!;
+
+      fachada.setBuilder(SillaComedorBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla()!;
+
       fachada.sillas = [silla1, silla2];
 
-      fachada.crearEnvio('Dirección 123', 'normal');
+      await fachada.crearEnvio('Dirección 123', 'normal');
 
       expect(fachada.envios.length, 1);
       expect(fachada.sillas.isEmpty, true);
-      var envio = fachada.envios[0];
+
+      final envio = fachada.envios[0];
       expect(envio.direccion, 'Dirección 123');
       expect(envio.estado, EstadoEnvio.pendiente);
 
@@ -151,17 +166,31 @@ void main() {
       expect(data[0]['direccion'], 'Dirección 123');
     });
 
-    test('getEnvios devuelve los envíos correctamente', () async {
-      var silla1 = Silla(true, true, true, 150);
-      var silla2 = Silla(true, false, true, 100);
-      fachada.sillas = [silla1, silla2];
+    test('getEnvios devuelve los envios correctamente', () async {
+      final fachada = Fachada();
 
-      fachada.crearEnvio('Dirección 123', 'normal');
+      // Crear primera silla con builder
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla();
 
-      var envios = await fachada.getEnvios();
+      // Crear segunda silla con otro tipo de builder
+      fachada.setBuilder(SillaOficinaBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla();
+
+      // Añadir las sillas a la fachada
+      fachada.sillas = [silla1!, silla2!];
+
+      // Crear el envío
+      await fachada.crearEnvio('Dirección 123', 'normal');
+
+      // Obtener los envíos desde fachada
+      final envios = await fachada.getEnvios();
       expect(envios.length, 1);
       expect(envios[0].direccion, 'Dirección 123');
 
+      // Validar directamente la respuesta HTTP
       final response = await http.get(Uri.parse('http://localhost:3000/envios'));
       expect(response.statusCode, 200);
       final List<dynamic> data = jsonDecode(response.body);
@@ -169,16 +198,30 @@ void main() {
       expect(data[0]['direccion'], 'Dirección 123');
     });
 
-    test('eliminarHistorial elimina los envíos entregados', () async {
-      var silla1 = Silla(true, true, true, 150);
-      var silla2 = Silla(true, false, true, 100);
-      fachada.sillas = [silla1, silla2];
+    test('eliminarHistorial elimina los envios entregados', () async {
+      final fachada = Fachada();
 
-      fachada.crearEnvio('Dirección 123', 'normal');
-      var envio2 = EnvioNormal('2', [silla1], EstadoEnvio.entregado, 'Dirección 456');
-      fachada.envios.add(envio2);
+      // Crear silla con builder
+      fachada.setBuilder(SillaComedorBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla();
 
-      fachada.eliminarHistorial();
+      fachada.setBuilder(SillaOficinaBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla();
+
+      fachada.sillas = [silla1!, silla2!];
+
+      // Crear un envío pendiente
+      await fachada.crearEnvio('Dirección 123', 'normal');
+
+      // Agregar manualmente un envío entregado
+      final envioEntregado = EnvioNormal('2', [silla1], EstadoEnvio.entregado, 'Dirección 456');
+      fachada.envios.add(envioEntregado);
+
+      // Ejecutar y verificar
+      await fachada.eliminarHistorial();
+
       expect(fachada.envios.length, 1);
       expect(fachada.envios[0].estado, EstadoEnvio.pendiente);
 
@@ -189,15 +232,25 @@ void main() {
       expect(data[0]['estado'], 'pendiente');
     });
 
-    test('realizarEnvio cambia el estado del envío a en_transito y entregado', () async {
-      var silla1 = Silla(true, true, true, 150);
-      var silla2 = Silla(true, false, true, 100);
-      fachada.sillas = [silla1, silla2];
+    test('realizarEnvio cambia el estado del envio a en_transito y entregado', () async {
+      final fachada = Fachada();
 
-      fachada.crearEnvio('Dirección 123', 'normal');
-      var envio = fachada.envios[0];
+      // Crear sillas usando builder
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla();
 
-      fachada.realizarEnvio(envio.id);
+      fachada.setBuilder(SillaInfantilBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla();
+
+      fachada.sillas = [silla1!, silla2!];
+
+      await fachada.crearEnvio('Dirección 123', 'normal');
+      final envio = fachada.envios[0];
+
+      await fachada.realizarEnvio(envio.id);
+
       expect(envio.getEstado(), EstadoEnvio.entregado);
 
       final response = await http.get(Uri.parse('http://localhost:3000/envios'));
@@ -206,24 +259,208 @@ void main() {
       expect(data[0]['estado'], 'entregado');
     });
 
-    test('getHistorial devuelve solo los envíos entregados', () async {
-      var silla1 = Silla(true, true, true, 150);
-      var silla2 = Silla(true, false, true, 100);
+    test('getHistorial devuelve solo los envios entregados', () async {
+      final fachada = Fachada();
+
+      // Crear y entregar el primer envío
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla()!;
+      fachada.sillas = [silla1];
+      await fachada.crearEnvio('Dirección 123', 'normal');
+      final envio1 = fachada.envios[0];
+      await fachada.realizarEnvio(envio1.id);
+
+      // Crear un segundo envío pendiente
+      fachada.setBuilder(SillaComedorBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla()!;
+      fachada.sillas = [silla2];
+      await fachada.crearEnvio('Dirección 456', 'normal');
+
+      // Verificar historial
+      final historial = await fachada.getHistorial();
+      expect(historial.length, 1);
+      expect(historial[0].id, envio1.id);
+      expect(historial[0].estado, EstadoEnvio.entregado);
+
+      // Verificar estado en backend
+      final response = await http.get(Uri.parse('http://localhost:3000/envios'));
+      expect(response.statusCode, 200);
+      final List<dynamic> data = jsonDecode(response.body);
+      expect(data.where((e) => e['estado'] == 'entregado').length, 1);
+      expect(data.where((e) => e['estado'] == 'pendiente').isNotEmpty, true);
+    });
+
+
+  });group('Fachada Tests', () {
+    late Fachada fachada;
+
+    setUp(() async {
+      fachada = Fachada();
+
+      // Limpiar envíos del backend
+      final response = await http.delete(Uri.parse('http://localhost:3000/envios/reset'));
+      if (response.statusCode != 200) {
+        throw Exception('No se pudo resetear el backend: ${response.body}');
+      }
+    });
+
+    test('crearEnvio agrega un envío correctamente', () async {
+      final fachada = Fachada();
+
+      // Crear sillas usando builders
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla()!;
+
+      fachada.setBuilder(SillaComedorBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla()!;
+
       fachada.sillas = [silla1, silla2];
 
-      fachada.crearEnvio('Dirección 123', 'normal');
-      var envio2 = EnvioNormal('2', [silla1], EstadoEnvio.entregado, 'Dirección 456');
-      fachada.envios.add(envio2);
+      await fachada.crearEnvio('Dirección 123', 'normal');
 
-      var historial = await fachada.getHistorial();
+      expect(fachada.envios.length, 1);
+      expect(fachada.sillas.isEmpty, true);
 
-      expect(historial.length, 1);
-      expect(historial[0].estado, EstadoEnvio.entregado);
+      final envio = fachada.envios[0];
+      expect(envio.direccion, 'Dirección 123');
+      expect(envio.estado, EstadoEnvio.pendiente);
+
+      final response = await http.get(Uri.parse('http://localhost:3000/envios'));
+      expect(response.statusCode, 200);
+
+      final List<dynamic> data = jsonDecode(response.body);
+      expect(data.isNotEmpty, true);
+      expect(data[0]['direccion'], 'Dirección 123');
+    });
+
+    test('getEnvios devuelve los envios correctamente', () async {
+      final fachada = Fachada();
+
+      // Crear primera silla con builder
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla();
+
+      // Crear segunda silla con otro tipo de builder
+      fachada.setBuilder(SillaOficinaBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla();
+
+      // Añadir las sillas a la fachada
+      fachada.sillas = [silla1!, silla2!];
+
+      // Crear el envío
+      await fachada.crearEnvio('Dirección 123', 'normal');
+
+      // Obtener los envíos desde fachada
+      final envios = await fachada.getEnvios();
+      expect(envios.length, 1);
+      expect(envios[0].direccion, 'Dirección 123');
+
+      // Validar directamente la respuesta HTTP
+      final response = await http.get(Uri.parse('http://localhost:3000/envios'));
+      expect(response.statusCode, 200);
+      final List<dynamic> data = jsonDecode(response.body);
+      expect(data.isNotEmpty, true);
+      expect(data[0]['direccion'], 'Dirección 123');
+    });
+
+    test('eliminarHistorial elimina los envios entregados', () async {
+      final fachada = Fachada();
+
+      // Crear silla con builder
+      fachada.setBuilder(SillaComedorBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla();
+
+      fachada.setBuilder(SillaOficinaBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla();
+
+      fachada.sillas = [silla1!, silla2!];
+
+      // Crear un envío pendiente
+      await fachada.crearEnvio('Dirección 123', 'normal');
+
+      // Agregar manualmente un envío entregado
+      final envioEntregado = EnvioNormal('2', [silla1], EstadoEnvio.entregado, 'Dirección 456');
+      fachada.envios.add(envioEntregado);
+
+      // Ejecutar y verificar
+      await fachada.eliminarHistorial();
+
+      expect(fachada.envios.length, 1);
+      expect(fachada.envios[0].estado, EstadoEnvio.pendiente);
 
       final response = await http.get(Uri.parse('http://localhost:3000/envios'));
       expect(response.statusCode, 200);
       final List<dynamic> data = jsonDecode(response.body);
-      expect(data.where((envio) => envio['estado'] == 'entregado').length, 1);
+      expect(data.length, 1);
+      expect(data[0]['estado'], 'pendiente');
+    });
+
+    test('realizarEnvio cambia el estado del envio a en_transito y entregado', () async {
+      final fachada = Fachada();
+
+      // Crear sillas usando builder
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla();
+
+      fachada.setBuilder(SillaInfantilBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla();
+
+      fachada.sillas = [silla1!, silla2!];
+
+      await fachada.crearEnvio('Dirección 123', 'normal');
+      final envio = fachada.envios[0];
+
+      await fachada.realizarEnvio(envio.id);
+
+      expect(envio.getEstado(), EstadoEnvio.entregado);
+
+      final response = await http.get(Uri.parse('http://localhost:3000/envios'));
+      expect(response.statusCode, 200);
+      final List<dynamic> data = jsonDecode(response.body);
+      expect(data[0]['estado'], 'entregado');
+    });
+
+    test('getHistorial devuelve solo los envios entregados', () async {
+      final fachada = Fachada();
+
+      // Crear y entregar el primer envío
+      fachada.setBuilder(SillaGamingBuilder());
+      fachada.buildSilla();
+      final silla1 = fachada.getSilla()!;
+      fachada.sillas = [silla1];
+      await fachada.crearEnvio('Dirección 123', 'normal');
+      final envio1 = fachada.envios[0];
+      await fachada.realizarEnvio(envio1.id);
+
+      // Crear un segundo envío pendiente
+      fachada.setBuilder(SillaComedorBuilder());
+      fachada.buildSilla();
+      final silla2 = fachada.getSilla()!;
+      fachada.sillas = [silla2];
+      await fachada.crearEnvio('Dirección 456', 'normal');
+
+      // Verificar historial
+      final historial = await fachada.getHistorial();
+      expect(historial.length, 1);
+      expect(historial[0].id, envio1.id);
+      expect(historial[0].estado, EstadoEnvio.entregado);
+
+      // Verificar estado en backend
+      final response = await http.get(Uri.parse('http://localhost:3000/envios'));
+      expect(response.statusCode, 200);
+      final List<dynamic> data = jsonDecode(response.body);
+      expect(data.where((e) => e['estado'] == 'entregado').length, 1);
+      expect(data.where((e) => e['estado'] == 'pendiente').isNotEmpty, true);
     });
   });
 }
