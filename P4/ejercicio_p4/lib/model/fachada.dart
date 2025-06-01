@@ -9,7 +9,7 @@ class Fachada {
   List<Silla> sillas = [];
   List<Envio> envios = [];
   SillaBuilder? builder;
-  static int CONTADOR_DE_ENVIOS = 0;
+  static int CONTADOR_DE_ENVIOS = 1;
 
   void setBuilder(SillaBuilder sillaBuilder) {
     builder = sillaBuilder;
@@ -38,7 +38,7 @@ class Fachada {
     return null;
   }
 
-  void crearEnvio(String direccion, String tipo) async {
+  Future<void> crearEnvio(String direccion, String tipo) async {
     List<Silla> lista_sillas = List.from(sillas);
     final envio = EnvioFactory.crearEnvio(tipo, _crearID(), lista_sillas, EstadoEnvio.pendiente, direccion);
 
@@ -46,11 +46,12 @@ class Fachada {
       Uri.parse('http://localhost:3000/envios'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'id': envio.id,
-        'tipo': tipo,
-        'direccion': direccion,
-        'estado': 'pendiente',
-        'sillas': envio.sillasToJson(),
+        'envio': { 
+          'tipo': tipo,
+          'direccion': direccion,
+          'estado': 'pendiente',
+          'sillas': envio.sillasToJson()
+        }
       }),
     );
 
