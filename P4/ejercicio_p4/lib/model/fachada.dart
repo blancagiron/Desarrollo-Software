@@ -122,7 +122,7 @@ class Fachada {
     }
   }
 
-  void eliminarHistorial() async {
+  Future<void> eliminarHistorial() async {
     List<Envio> historial = await getHistorial();
 
     for (Envio envio in historial) {
@@ -148,7 +148,7 @@ class Fachada {
     return historial;
   }
 
-  void realizarEnvio(String id) async {
+  Future<void> realizarEnvio(String id) async {
     Envio envio = envios.firstWhere((envio) => envio.id == id);
 
     await http.patch(
