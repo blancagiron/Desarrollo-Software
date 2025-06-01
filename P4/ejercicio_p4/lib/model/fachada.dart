@@ -157,7 +157,7 @@ class Fachada {
       body: jsonEncode({'estado': 'en_transito'}),
     );
 
-    envio.realizarEnvio();
+    await envio.realizarEnvio();
 
     await http.patch(
       Uri.parse('http://localhost:3000/envios/$id'),
