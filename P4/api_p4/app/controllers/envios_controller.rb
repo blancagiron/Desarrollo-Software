@@ -1,6 +1,6 @@
 class EnviosController < ApplicationController
   before_action :set_envio, only: [:show, :update, :destroy]
-  
+
   # GET /envios
   def index
     @envios = Envio.all
@@ -45,6 +45,6 @@ class EnviosController < ApplicationController
   end
 
   def envio_params
-    params.require(:envio).permit(:direccion, :estado, sillas: {})
+    params.require(:envio).permit(:direccion, :estado, :tipo, sillas: {})
   end
 end
