@@ -13,8 +13,9 @@
 ActiveRecord::Schema[7.1].define(version: 2025_05_26_160915) do
   create_table "envios", force: :cascade do |t|
     t.json "sillas"
-    t.integer "estado", default: 0, null: false
-    t.string "direccion", null: false
+    t.integer "estado", default: 0
+    t.string "direccion"
+    t.integer "tipo", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
