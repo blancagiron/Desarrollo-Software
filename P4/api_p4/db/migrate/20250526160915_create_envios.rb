@@ -1,7 +1,7 @@
 class CreateEnvios < ActiveRecord::Migration[7.0]
   def change
-    create_table :envios, id: false do |t| # ⬅️ Disable autoincrement ID
-      t.primary_key :id, :integer # ⬅️ ID personalizado, tipo entero
+    create_table :envios, id: false do |t|
+      t.primary_key :id, :integer 
       t.json :sillas
       t.integer :estado, default: 0
       t.string :direccion
