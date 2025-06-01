@@ -16,13 +16,13 @@ abstract class Envio {
 
   void listarSillas();
   double getCostoTotal();
-  void realizarEnvio();
+  Future<void> realizarEnvio();
   String getTipo();
   EstadoEnvio getEstado();
 
-  Map<String, String> sillasToJson() {
+  Map<String, dynamic> sillasToJson() {
     return sillas.asMap().map((index, silla) {
-      return MapEntry(index.toString(), silla.toString());
+      return MapEntry(index.toString(), silla.toJson());
     });
   }
 }
@@ -48,7 +48,7 @@ class EnvioNormal extends Envio {
   }
 
   @override
-  void realizarEnvio() async {
+  Future<void> realizarEnvio() async {
     estado = EstadoEnvio.enTransito;
     print("Enviando por método normal a: $direccion");
     await Future.delayed(Duration(seconds: 20));
@@ -84,7 +84,7 @@ class EnvioExpress extends Envio {
   }
 
   @override
-  void realizarEnvio() async{
+  Future<void> realizarEnvio() async{
     estado = EstadoEnvio.enTransito;
     print("Enviando por método express a: $direccion");
     await Future.delayed(Duration(seconds: 10));
