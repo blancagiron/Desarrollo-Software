@@ -47,7 +47,7 @@ class Fachada {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'envio': {
-          'id': int.parse(id),
+          'id': int.parse(envio.id),
           'tipo': tipo,
           'direccion': direccion,
           'estado': 'pendiente',
