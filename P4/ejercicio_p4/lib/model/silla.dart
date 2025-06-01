@@ -32,4 +32,14 @@ class Silla {
   void setRuedas(bool tieneRuedas) {
     ruedas = tieneRuedas;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'respaldo': respaldo,
+      'ruedas': ruedas,
+      'acolchada': acolchada,
+      'precio': precio,
+      'tipo': tipo,
+    };
+  }
 }
